@@ -6,6 +6,7 @@ from typing import Callable, List, Union, Tuple, Any
 
 import requests
 # pylint: disable=E0611
+# pylint does not like the way aocd exposes data. I don't care.
 from aocd import data, submit  # type: ignore
 from aocd.models import Puzzle  # type: ignore
 from bs4 import BeautifulSoup  # type: ignore
@@ -81,6 +82,7 @@ def get_test_cases(day: int, part_input: str) -> List[TestCase]:
 
 
 # pylint: disable=R0912
+# pylint does not like to many branches. I don't care.
 def solve(day: int,
           function: Function,
           parse_function: ParseFunction = default_parser,
