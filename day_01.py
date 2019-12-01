@@ -13,23 +13,14 @@ SOLVE = partial(solve, DAY)
 
 
 def fuel(weight: int) -> int:
-    """
-    calculate the fuel required for a component
-    """
     return weight // 3 - 2
 
 
 def part_a(data: List[int]) -> int:
-    """
-    Part A
-    """
     return sum([fuel(module) for module in data])
 
 
 def fuel_rec(weight: int) -> int:
-    """
-    calculate the fuel required for a component, concidering the weight of the fuel itself
-    """
     additional_fuel = fuel(weight)
     if additional_fuel <= 0:
         return 0
@@ -37,16 +28,10 @@ def fuel_rec(weight: int) -> int:
 
 
 def part_b(data: List[int]) -> int:
-    """
-    Part B
-    """
     return sum([fuel_rec(module) for module in data])
 
 
 def parse(data: str) -> List[int]:
-    """
-    Parse the input
-    """
     return [int(x) for x in data.split('\n')]
 
 

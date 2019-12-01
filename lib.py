@@ -1,6 +1,3 @@
-"""
-Misc functions
-"""
 import os
 from typing import Callable, List, Union, Tuple, Any
 
@@ -24,9 +21,6 @@ default_parser: Callable[[Any], Any] = lambda x: x
 
 
 def parse_int_if_possible(possible_int: str) -> Union[str, int]:
-    """
-    Parses the parameter to int if possible
-    """
     try:
         return int(possible_int)
     except ValueError:
@@ -34,9 +28,6 @@ def parse_int_if_possible(possible_int: str) -> Union[str, int]:
 
 
 def get_test_cases(day: int, part_input: str) -> List[TestCase]:
-    """
-    Retrieves the test cases from adventofcode.com
-    """
     test_cases = []
 
     resp = requests.get(f"https://adventofcode.com/2019/day/{day}",
@@ -87,9 +78,6 @@ def solve(day: int,
           function: Function,
           parse_function: ParseFunction = default_parser,
           test_cases: List[TestCase] = None):
-    """
-    Solves a puzzle
-    """
     part = function.__name__.split('_')[1]
 
     if not test_cases:

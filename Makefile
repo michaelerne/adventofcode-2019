@@ -12,7 +12,7 @@ help:
 
 lint:
 	$(foreach file, $(wildcard $(DIR)/*.py), python -m mypy $(file);)
-	$(foreach file, $(wildcard $(DIR)/*.py), python -m pylint $(file);)
+	$(foreach file, $(wildcard $(DIR)/*.py), python -m pylint --disable=C0114,C0116 $(file);)
 
 run:
 	$(foreach file, $(wildcard $(DIR)/day_*.py), python $(file);)
