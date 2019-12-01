@@ -1,0 +1,4 @@
+advent-of-code-data==0.8.3
+mypy==0.750
+requests==2.22.0
+beautifulsoup4==4.8.1
