@@ -1,28 +1,42 @@
+"""
+Advent of Code Puzzle
+"""
+
 from functools import partial
 from os.path import basename, splitext
 from typing import List
 
-from lib import solve as solve_
+from lib import solve
 
 DAY: int = int(splitext(basename(__file__))[0].split('_')[1])
-solve = partial(solve_, DAY)
+SOLVE = partial(solve, DAY)
 
 
 def part_a(data: List[int]) -> int:
+    """
+    Part A
+    """
+    print(data)
     return 0
 
 
 def part_b(data: List[int]) -> int:
+    """
+    Part B
+    """
+    print(data)
     return 0
 
 
 def parse(data: str) -> List[int]:
+    """
+    Parse the input
+    """
     return [int(x) for x in data.split('\n')]
 
 
 if __name__ == "__main__":
 
-    solve(part_a, parse)
+    SOLVE(part_a, parse)
 
-    solve(part_b, parse)
-
+    SOLVE(part_b, parse)

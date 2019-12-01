@@ -1,31 +1,41 @@
+"""
+Misc functions
+"""
 import os
 from typing import Callable, List, Union, Tuple, Any
 
 import requests
+# pylint: disable=E0611
 from aocd import data, submit  # type: ignore
 from aocd.models import Puzzle  # type: ignore
 from bs4 import BeautifulSoup  # type: ignore
 
 # type definitions
-AOC_INPUT = str
-INPUT = Union[int, str]
-OUTPUT = int
+AOCInput = str
+Input = Union[int, str]
+Output = int
 
-FN = Callable[[List[INPUT]], OUTPUT]
-PARSE_FN = Callable[[AOC_INPUT], List[INPUT]]
-TEST_CASE = Tuple[INPUT, OUTPUT]
+Function = Callable[[List[Input]], Output]
+ParseFunction = Callable[[AOCInput], List[Input]]
+TestCase = Tuple[Input, Output]
 
 default_parser: Callable[[Any], Any] = lambda x: x
 
 
-def parse_int_if_possible(input: str) -> Union[str, int]:
+def parse_int_if_possible(possible_int: str) -> Union[str, int]:
+    """
+    Parses the parameter to int if possible
+    """
     try:
-        return int(input)
+        return int(possible_int)
     except ValueError:
-        return input
+        return possible_int
 
 
-def get_test_cases(day: int, part_input: str) -> List[TEST_CASE]:
+def get_test_cases(day: int, part_input: str) -> List[TestCase]:
+    """
+    Retrieves the test cases from adventofcode.com
+    """
     test_cases = []
 
     resp = requests.get(f"https://adventofcode.com/2019/day/{day}",
@@ -35,43 +45,50 @@ def get_test_cases(day: int, part_input: str) -> List[TEST_CASE]:
     html = BeautifulSoup(resp.content, features='html.parser')
 
     # parts are <article class="day-desc">
-    parts = html.body.find_all('article', attrs={'class': 'day-desc'})
+    parts_html = html.body.find_all('article', attrs={'class': 'day-desc'})
     if part_input == 'a':
-        part = parts[0]
+        part_html = parts_html[0]
     else:
-        part = parts[1]
+        part_html = parts_html[1]
 
     # each part has a <ul>
-    ul = part.find('ul')
+    ul_html = part_html.find('ul')
 
     # each <li> within that <ul> is a test case
-    lis = ul.find_all('li')
+    lis_html = ul_html.find_all('li')
 
-    for li in lis:
+    for li_html in lis_html:
         # each <li> has multiple <code> segments
-        codes = li.find_all('code')
+        codes_html = li_html.find_all('code')
 
         # assume that the first <code> is input
-        input = codes[0].text
+        puzzle_input = codes_html[0].text
 
         # assume that the last <code> contains expected_output
-        output = codes[-1].text
+        output = codes_html[-1].text
 
         # if there is a =, the expected output is at the very end
         if '=' in output:
             output = output.split(' = ')[-1]
 
         # if they can be ints, let them be ints
-        input = parse_int_if_possible(input)
+        puzzle_input = parse_int_if_possible(puzzle_input)
         output = parse_int_if_possible(output)
 
-        test_cases.append((input, output))
+        test_cases.append((puzzle_input, output))
 
     return test_cases
 
 
-def solve(day: int, fn: FN, parse_fn: PARSE_FN = default_parser, test_cases: List[TEST_CASE] = None):
-    part = fn.__name__.split('_')[1]
+# pylint: disable=R0912
+def solve(day: int,
+          function: Function,
+          parse_function: ParseFunction = default_parser,
+          test_cases: List[TestCase] = None):
+    """
+    Solves a puzzle
+    """
+    part = function.__name__.split('_')[1]
 
     if not test_cases:
         print(f"# TEST CASES")
@@ -83,23 +100,25 @@ def solve(day: int, fn: FN, parse_fn: PARSE_FN = default_parser, test_cases: Lis
 
     print("# TESTS")
     fails = 0
-    for input, expected_output in test_cases:
-        actual_output = fn([input])
+    for puzzle_input, expected_output in test_cases:
+        actual_output = function([puzzle_input])
         if actual_output != expected_output:
-            print(f"FAIL: input [{input}] -> actual [{actual_output}] != expected [{expected_output}]")
+            print(f"FAIL: input [{puzzle_input}] -> actual [{actual_output}] "
+                  f"!= expected [{expected_output}]")
             fails += 1
         else:
-            print(f"OK: input [{input}] -> actual [{actual_output}] == expected [{expected_output}]")
+            print(f"OK: input [{puzzle_input}] -> actual [{actual_output}] "
+                  f"== expected [{expected_output}]")
 
     if fails > 0:
         print(f"ABORT: encountered {fails} failures in test_cases!")
-        return
+        return False
 
     print(f"# PARSING")
-    parsed_data = parse_fn(data)
+    parsed_data = parse_function(data)
 
     print(f"# SOLVING")
-    answer = fn(parsed_data)
+    answer = function(parsed_data)
     print(f"SOLVED: answer [{answer}]")
 
     print(f"# VERIFICATION")
@@ -116,8 +135,7 @@ def solve(day: int, fn: FN, parse_fn: PARSE_FN = default_parser, test_cases: Lis
         resp = submit(answer, part=part, day=day, year=2019)
         if resp.status_code == 200:
             return True
-        else:
-            return False
+        return False
 
     # we solved it already
     print(f"ALREADY SOLVED: correct_answer [{correct_answer}]")
@@ -125,3 +143,5 @@ def solve(day: int, fn: FN, parse_fn: PARSE_FN = default_parser, test_cases: Lis
         print(f"OK: answer [{answer}]")
     else:
         print(f"FAIL: answer [{answer}] != correct_answer [{correct_answer}]")
+
+    return True
