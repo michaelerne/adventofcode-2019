@@ -19,26 +19,33 @@ def intcode(data: List[int], instruction_pointer: int = 0) -> int:
     30
     """
 
-    if data[instruction_pointer] == 99:
-        return data[0]
+    opcode = data[instruction_pointer]
 
-    if data[instruction_pointer] == 1:
+
+    if opcode == 1:
 
         from_1 = data[instruction_pointer + 1]
         from_2 = data[instruction_pointer + 2]
         target = data[instruction_pointer + 3]
         data[target] = data[from_1] + data[from_2]
 
-    elif data[instruction_pointer] == 2:
+        parameter_count = 3
+
+    elif opcode == 2:
         from_1 = data[instruction_pointer + 1]
         from_2 = data[instruction_pointer + 2]
         target = data[instruction_pointer + 3]
         data[target] = data[from_1] * data[from_2]
 
-    else:
-        print(f"unknown opcode [{data[instruction_pointer]}], "
-              f"instruction pointer at [{instruction_pointer}]")
+        parameter_count = 3
 
-    instruction_pointer += 4
+    elif opcode == 99:
+        return data[0]
+
+    else:
+        print(f"unknown opcode [{opcode}]")
+        return -1
+
+    instruction_pointer += 1 + parameter_count
 
     return intcode(data, instruction_pointer)
