@@ -1,7 +1,7 @@
 from typing import List
 
 
-def intcode(data: List[int]) -> int:
+def intcode(data: List[int], instruction_pointer: int = 0) -> int:
     """
     >>> intcode([1,0,0,0,99])
     2
@@ -19,26 +19,26 @@ def intcode(data: List[int]) -> int:
     30
     """
 
-    instruction_pointer = 0
+    if data[instruction_pointer] == 99:
+        return data[0]
 
-    while data[instruction_pointer] != 99:
+    if data[instruction_pointer] == 1:
 
-        if data[instruction_pointer] == 1:
+        from_1 = data[instruction_pointer + 1]
+        from_2 = data[instruction_pointer + 2]
+        target = data[instruction_pointer + 3]
+        data[target] = data[from_1] + data[from_2]
 
-            from_1 = data[instruction_pointer + 1]
-            from_2 = data[instruction_pointer + 2]
-            target = data[instruction_pointer + 3]
-            data[target] = data[from_1] + data[from_2]
+    elif data[instruction_pointer] == 2:
+        from_1 = data[instruction_pointer + 1]
+        from_2 = data[instruction_pointer + 2]
+        target = data[instruction_pointer + 3]
+        data[target] = data[from_1] * data[from_2]
 
-        elif data[instruction_pointer] == 2:
-            from_1 = data[instruction_pointer + 1]
-            from_2 = data[instruction_pointer + 2]
-            target = data[instruction_pointer + 3]
-            data[target] = data[from_1] * data[from_2]
+    else:
+        print(f"unknown opcode [{data[instruction_pointer]}], "
+              f"instruction pointer at [{instruction_pointer}]")
 
-        else:
-            print(f"unknown opcode [{data[instruction_pointer]}], "
-                  f"instruction pointer at [{instruction_pointer}]")
+    instruction_pointer += 4
 
-        instruction_pointer += 4
-    return data[0]
+    return intcode(data, instruction_pointer)
