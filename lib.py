@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup  # type: ignore
 
 # type definitions
 AOCInput = str
-Input = Union[int, str]
+Input = List[Union[int, str]]
 Output = int
 
 Function = Callable[[List[Input]], Output]
@@ -54,7 +54,7 @@ def get_test_cases(day: int, part_input: str) -> List[TestCase]:
         codes_html = li_html.find_all('code')
 
         # assume that the first <code> is input
-        puzzle_input = codes_html[0].text
+        puzzle_input = [codes_html[0].text]
 
         # assume that the last <code> contains expected_output
         output = codes_html[-1].text
@@ -64,7 +64,15 @@ def get_test_cases(day: int, part_input: str) -> List[TestCase]:
             output = output.split(' = ')[-1]
 
         # if they can be ints, let them be ints
-        puzzle_input = parse_int_if_possible(puzzle_input)
+        puzzle_input = [parse_int_if_possible(puzzle_input[0])]
+
+        # if its still a str, try some things
+        if isinstance(puzzle_input[0], str):
+
+            # if its a csv, expand it into List[int]
+            if ',' in puzzle_input[0]:
+                puzzle_input = [parse_int_if_possible(x) for x in puzzle_input[0].split(',')]
+
         output = parse_int_if_possible(output)
 
         test_cases.append((puzzle_input, output))
@@ -75,12 +83,17 @@ def get_test_cases(day: int, part_input: str) -> List[TestCase]:
 # pylint: disable=R0912
 # pylint does not like to many branches. I don't care.
 def solve(day: int,
-          function: Function,
+          solve_function: Function,
           parse_function: ParseFunction = default_parser,
-          test_cases: List[TestCase] = None):
-    part = function.__name__.split('_')[1]
+          generate_test_cases: bool = True,
+          test_cases=None):
 
-    if not test_cases:
+    if test_cases is None:
+        test_cases = list()
+
+    part = solve_function.__name__.split('_')[1]
+
+    if generate_test_cases:
         print(f"# TEST CASES")
         test_cases = get_test_cases(day, part)
         if len(test_cases) > 0:
@@ -91,7 +104,7 @@ def solve(day: int,
     print("# TESTS")
     fails = 0
     for puzzle_input, expected_output in test_cases:
-        actual_output = function([puzzle_input])
+        actual_output = solve_function(puzzle_input)
         if actual_output != expected_output:
             print(f"FAIL: input [{puzzle_input}] -> actual [{actual_output}] "
                   f"!= expected [{expected_output}]")
@@ -108,7 +121,7 @@ def solve(day: int,
     parsed_data = parse_function(data)
 
     print(f"# SOLVING")
-    answer = function(parsed_data)
+    answer = solve_function(parsed_data)
     print(f"SOLVED: answer [{answer}]")
 
     print(f"# VERIFICATION")
