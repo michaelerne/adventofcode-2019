@@ -21,7 +21,6 @@ def intcode(data: List[int], instruction_pointer: int = 0) -> int:
 
     opcode = data[instruction_pointer]
 
-
     if opcode == 1:
 
         from_1 = data[instruction_pointer + 1]
