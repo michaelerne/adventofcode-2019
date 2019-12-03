@@ -22,7 +22,7 @@ def part_a(data: List[Wire]) -> int:
 
     crossings: Set[CoordinatePair] = set(wire_a).intersection(wire_b)
 
-    distances: List[int] = [abs(x) + abs(y) for x, y in crossings if x + y != 0]
+    distances: List[int] = [abs(x) + abs(y) for x, y in crossings if not (x == 0 and y == 0)]
 
     return min(distances)
 
