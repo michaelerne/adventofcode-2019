@@ -59,26 +59,36 @@ def get_coordinate_change_for_direction(direction: Direction) -> CoordinatePair:
     return x_change, y_change
 
 
+def process(wire, direction_changes, x_coord, y_coord):
+
+    if len(direction_changes) == 0:
+        return wire
+
+    direction_change = direction_changes[0]
+    remaining_direction_changes = direction_changes[1:]
+
+    direction = direction_change[0]
+    movement_amount = int(direction_change[1:])
+
+    x_change, y_change = get_coordinate_change_for_direction(direction)
+
+    for _ in range(0, movement_amount):
+        x_coord += x_change
+        y_coord += y_change
+        wire.append((x_coord, y_coord))
+
+    return process(wire, remaining_direction_changes, x_coord, y_coord)
+
+
 def parse_wire(data: str) -> Wire:
     direction_changes: List[str] = data.split(',')
 
     x_coord = 0
     y_coord = 0
 
-    wire: Wire = [(0, 0)]
+    wire: Wire = [(x_coord, y_coord)]
 
-    for direction_change in direction_changes:
-        direction = direction_change[0]
-        movement_amount = int(direction_change[1:])
-
-        x_change, y_change = get_coordinate_change_for_direction(direction)
-
-        for _ in range(0, movement_amount):
-            x_coord += x_change
-            y_coord += y_change
-            wire.append((x_coord, y_coord))
-
-    return wire
+    return process(wire, direction_changes, x_coord, y_coord)
 
 
 def parse(data: str) -> List[Wire]:
