@@ -65,7 +65,7 @@ def parse_wire(data: str) -> Wire:
     x_coord = 0
     y_coord = 0
 
-    path: Wire = [(0, 0)]
+    wire: Wire = [(0, 0)]
 
     for direction_change in direction_changes:
         direction = direction_change[0]
@@ -76,9 +76,9 @@ def parse_wire(data: str) -> Wire:
         for _ in range(0, movement_amount):
             x_coord += x_change
             y_coord += y_change
-            path.append((x_coord, y_coord))
+            wire.append((x_coord, y_coord))
 
-    return path
+    return wire
 
 
 def parse(data: str) -> List[Wire]:
