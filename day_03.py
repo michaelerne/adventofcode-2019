@@ -35,46 +35,43 @@ def part_b(data: List[Wire]) -> int:
     return min(steps_to_crossing)
 
 
+def parse_wire(data: str) -> Wire:
+    direction_changes: List[str] = data.split(',')
+
+    x_coord = 0
+    y_coord = 0
+
+    path: Wire = [(0, 0)]
+
+    for direction_change in direction_changes:
+        direction = direction_change[0]
+        movement_amount = int(direction_change[1:])
+
+        if direction == 'R':
+            x_change = 1
+            y_change = 0
+        elif direction == 'L':
+            x_change = -1
+            y_change = 0
+        elif direction == 'U':
+            x_change = 0
+            y_change = 1
+        elif direction == 'D':
+            x_change = 0
+            y_change = -1
+        else:
+            sys.exit(0)
+
+        for _ in range(0, movement_amount):
+            x_coord += x_change
+            y_coord += y_change
+            path.append((x_coord, y_coord))
+
+    return path
+
+
 def parse(data: str) -> List[Wire]:
-    wires_raw = data.split('\n')
-    wires = []
-
-    for wire_raw in wires_raw:
-
-        direction_changes: List[str] = wire_raw.split(',')
-
-        x_coord = 0
-        y_coord = 0
-
-        path = [(0, 0)]
-
-        for direction_change in direction_changes:
-            direction = direction_change[0]
-            movement_amount = int(direction_change[1:])
-
-            if direction == 'R':
-                x_change = 1
-                y_change = 0
-            elif direction == 'L':
-                x_change = -1
-                y_change = 0
-            elif direction == 'U':
-                x_change = 0
-                y_change = 1
-            elif direction == 'D':
-                x_change = 0
-                y_change = -1
-            else:
-                sys.exit(0)
-
-            for _ in range(0, movement_amount):
-                x_coord += x_change
-                y_coord += y_change
-                path.append((x_coord, y_coord))
-
-        wires.append(path)
-
-    return wires
+    return [parse_wire(x) for x in data.split('\n')]
 
 
 if __name__ == "__main__":
