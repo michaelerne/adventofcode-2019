@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup  # type: ignore
 
 # type definitions
 AOCInput = str
-Input = List[Union[int, str]]
+Input = Union[int, str]
 Output = int
 
 Function = Callable[[List[Input]], Output]
@@ -27,8 +27,12 @@ def parse_int_if_possible(possible_int: str) -> Union[str, int]:
         return possible_int
 
 
+def strip_code(string: str) -> str:
+    return string.replace('<code>', '').replace('</code>', '').replace('<br/>', '\n')
+
+
 def get_test_cases(day: int, part_input: str) -> List[TestCase]:
-    test_cases = []
+    test_cases: List[TestCase] = []
 
     resp = requests.get(f"https://adventofcode.com/2019/day/{day}",
                         cookies={"session": os.getenv("AOC_SESSION")},
@@ -54,24 +58,13 @@ def get_test_cases(day: int, part_input: str) -> List[TestCase]:
         codes_html = li_html.find_all('code')
 
         # assume that the first <code> is input
-        puzzle_input = [codes_html[0].text]
-
+        puzzle_input = strip_code(str(codes_html[0]))
         # assume that the last <code> contains expected_output
         output = codes_html[-1].text
 
         # if there is a =, the expected output is at the very end
         if '=' in output:
             output = output.split(' = ')[-1]
-
-        # if they can be ints, let them be ints
-        puzzle_input = [parse_int_if_possible(puzzle_input[0])]
-
-        # if its still a str, try some things
-        if isinstance(puzzle_input[0], str):
-
-            # if its a csv, expand it into List[int]
-            if ',' in puzzle_input[0]:
-                puzzle_input = [parse_int_if_possible(x) for x in puzzle_input[0].split(',')]
 
         output = parse_int_if_possible(output)
 
@@ -95,7 +88,7 @@ def solve(day: int,
 
     if generate_test_cases:
         print(f"# TEST CASES")
-        test_cases = get_test_cases(day, part)
+        test_cases += get_test_cases(day, part)
         if len(test_cases) > 0:
             print(f"OK: generated [{len(test_cases)}] test cases")
         else:
@@ -104,7 +97,7 @@ def solve(day: int,
     print("# TESTS")
     fails = 0
     for puzzle_input, expected_output in test_cases:
-        actual_output = solve_function(puzzle_input)
+        actual_output = solve_function(parse_function(puzzle_input))
         if actual_output != expected_output:
             print(f"FAIL: input [{puzzle_input}] -> actual [{actual_output}] "
                   f"!= expected [{expected_output}]")
