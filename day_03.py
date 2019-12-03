@@ -60,6 +60,7 @@ def parse_wire(data: str) -> Wire:
             x_change = 0
             y_change = -1
         else:
+            print(f"found unknown direction: [{direction}]")
             sys.exit(0)
 
         for _ in range(0, movement_amount):
