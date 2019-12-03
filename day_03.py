@@ -12,7 +12,7 @@ Coordinate = int
 CoordinatePair = Tuple[Coordinate, Coordinate]
 Direction = str
 MovementAmount = int
-DirectionChange = Tuple[Direction, MovementAmount]
+DirectionChange = str
 Wire = List[CoordinatePair]
 
 
@@ -59,16 +59,19 @@ def get_coordinate_change_for_direction(direction: Direction) -> CoordinatePair:
     return x_change, y_change
 
 
-def process(wire, direction_changes, x_coord, y_coord):
+def process(wire: Wire,
+            direction_changes: List[DirectionChange],
+            x_coord: Coordinate,
+            y_coord: Coordinate) -> Wire:
 
     if len(direction_changes) == 0:
         return wire
 
-    direction_change = direction_changes[0]
-    remaining_direction_changes = direction_changes[1:]
+    direction_change: DirectionChange = direction_changes[0]
+    remaining_direction_changes: List[DirectionChange] = direction_changes[1:]
 
-    direction = direction_change[0]
-    movement_amount = int(direction_change[1:])
+    direction: Direction = direction_change[0]
+    movement_amount: MovementAmount = int(direction_change[1:])
 
     x_change, y_change = get_coordinate_change_for_direction(direction)
 
