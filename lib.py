@@ -57,18 +57,20 @@ def get_test_cases(day: int, part_input: str) -> List[TestCase]:
         # each <li> has multiple <code> segments
         codes_html = li_html.find_all('code')
 
-        # assume that the first <code> is input
-        puzzle_input = strip_code(str(codes_html[0]))
-        # assume that the last <code> contains expected_output
-        output = codes_html[-1].text
+        # day 4 got us no code blocks
+        if codes_html:
+            # assume that the first <code> is input
+            puzzle_input = strip_code(str(codes_html[0]))
+            # assume that the last <code> contains expected_output
+            output = codes_html[-1].text
 
-        # if there is a =, the expected output is at the very end
-        if '=' in output:
-            output = output.split(' = ')[-1]
+            # if there is a =, the expected output is at the very end
+            if '=' in output:
+                output = output.split(' = ')[-1]
 
-        output = parse_int_if_possible(output)
+            output = parse_int_if_possible(output)
 
-        test_cases.append((puzzle_input, output))
+            test_cases.append((puzzle_input, output))
 
     return test_cases
 
