@@ -76,14 +76,13 @@ def get_test_cases(day: int, part_input: str) -> List[TestCase]:
     return test_cases
 
 
-# pylint: disable=R0912
-# pylint does not like to many branches. I don't care.
+# pylint: disable=R0912,R0914
+# pylint does not like to many branches and local vars. I don't care.
 def solve(day: int,
           solve_function: Function,
           parse_function: ParseFunction = default_parser,
           generate_test_cases: bool = True,
           test_cases=None):
-
     if test_cases is None:
         test_cases = list()
 
