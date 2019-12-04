@@ -1,7 +1,7 @@
+import sys
 from functools import partial
 from os.path import basename, splitext
-from typing import List, Tuple, Set
-import sys
+from typing import List, Set, Tuple
 
 from lib import solve
 

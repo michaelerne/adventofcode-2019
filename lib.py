@@ -1,5 +1,5 @@
 import os
-from typing import Callable, List, Union, Tuple, Any
+from typing import Any, Callable, List, Tuple, Union
 
 import requests
 # pylint: disable=E0611
