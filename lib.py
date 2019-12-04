@@ -1,4 +1,5 @@
 import os
+from time import time
 from typing import Any, Callable, List, Tuple, Union
 
 import requests
@@ -116,8 +117,9 @@ def solve(day: int,
     parsed_data = parse_function(data)
 
     print(f"# SOLVING")
+    start_time = time()
     answer = solve_function(parsed_data)
-    print(f"SOLVED: answer [{answer}]")
+    print(f"SOLVED: answer [{answer}], took {time() - start_time} seconds")
 
     print(f"# VERIFICATION")
     # see if we already solved it
