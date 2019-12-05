@@ -100,13 +100,14 @@ def solve(day: int,
     fails = 0
     for puzzle_input, expected_output in test_cases:
         actual_output = solve_function(parse_function(puzzle_input))
+        print(f"INPUT:\n{puzzle_input}")
+        print(f"OUTPUT EXPECTED:\n{expected_output}")
+        print(f"OUTPUT ACTUAL:\n{actual_output}")
         if actual_output != expected_output:
-            print(f"FAIL: input [{puzzle_input}] -> actual [{actual_output}] "
-                  f"!= expected [{expected_output}]")
+            print(f"FAIL: actual != expected output")
             fails += 1
         else:
-            print(f"OK: input [{puzzle_input}] -> actual [{actual_output}] "
-                  f"== expected [{expected_output}]")
+            print(f"OK: actual == expected output")
 
     if fails > 0:
         print(f"ABORT: encountered {fails} failures in test_cases!")
