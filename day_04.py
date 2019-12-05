@@ -30,7 +30,7 @@ def never_decreases(digits: Digits) -> bool:
 def is_valid_a(number: int) -> bool:
     digits = [int(x) for x in str(number)]
 
-    if has_pairs(digits) and never_decreases(digits):
+    if never_decreases(digits) and has_pairs(digits):
         return True
 
     return False
