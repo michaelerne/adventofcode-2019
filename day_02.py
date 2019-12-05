@@ -33,8 +33,7 @@ def part_b(data: List[int]) -> int:
             first_value, _ = intcode(test_data)
             if first_value == goal:
                 return 100 * noun + verb
-    print('WHOOPS')
-    return -1
+    raise Exception('did not find a solution')
 
 
 def parse(data: str) -> List[int]:
