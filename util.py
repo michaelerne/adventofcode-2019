@@ -104,18 +104,18 @@ def intcode(data: List[int], inputs=None, instruction_pointer: int = 0) -> Tuple
         modes, opcode = parse_instruction(data[instruction_pointer])
 
         if opcode == 1:
-            from_1 = read(data, instruction_pointer, 1, modes)
-            from_2 = read(data, instruction_pointer, 2, modes)
+            value_1 = read(data, instruction_pointer, 1, modes)
+            value_2 = read(data, instruction_pointer, 2, modes)
 
-            write(data, instruction_pointer, 3, from_1 + from_2)
+            write(data, instruction_pointer, 3, value_1 + value_2)
 
             instruction_pointer_shift = 4
 
         elif opcode == 2:
-            from_1 = read(data, instruction_pointer, 1, modes)
-            from_2 = read(data, instruction_pointer, 2, modes)
+            value_1 = read(data, instruction_pointer, 1, modes)
+            value_2 = read(data, instruction_pointer, 2, modes)
 
-            write(data, instruction_pointer, 3, from_1 * from_2)
+            write(data, instruction_pointer, 3, value_1 * value_2)
 
             instruction_pointer_shift = 4
 
@@ -123,17 +123,17 @@ def intcode(data: List[int], inputs=None, instruction_pointer: int = 0) -> Tuple
             if len(inputs) == 0:
                 raise Exception("ran out of inputs")
 
-            from_1 = inputs[0]
+            value_1 = inputs[0]
             inputs = inputs[1:]
 
-            write(data, instruction_pointer, 1, from_1)
+            write(data, instruction_pointer, 1, value_1)
 
             instruction_pointer_shift = 2
 
         elif opcode == 4:
-            from_1 = read(data, instruction_pointer, 1, modes)
+            value_1 = read(data, instruction_pointer, 1, modes)
 
-            outputs.append(from_1)
+            outputs.append(value_1)
 
             instruction_pointer_shift = 2
 
