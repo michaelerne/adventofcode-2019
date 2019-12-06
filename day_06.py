@@ -2,7 +2,7 @@ from functools import partial
 from os.path import basename, splitext
 from typing import List, Tuple, Dict, Set
 
-import networkx as nx
+import networkx as nx  # type: ignore
 
 from lib import solve
 
@@ -11,12 +11,10 @@ SOLVE = partial(solve, DAY)
 
 
 def part_a(graph: nx.Graph) -> int:
-
     return sum(nx.shortest_path_length(graph, x, "COM") for x in graph.nodes)
 
 
 def part_b(graph: nx.Graph) -> int:
-
     return nx.shortest_path_length(graph, "YOU", "SAN") - 2
 
 
@@ -32,7 +30,6 @@ def get_indirect_orbits(direct_orbits, planet):
 
 
 def part_a_no_nx(data: List[Tuple[str, str]]) -> int:
-
     planets: Set[str] = set([x for x, _ in data] + [y for _, y in data])
 
     direct_orbits: Dict[str, str] = {orbit_to: orbit_from for orbit_from, orbit_to in data}
@@ -47,14 +44,12 @@ def part_a_no_nx(data: List[Tuple[str, str]]) -> int:
 
 
 def path_to_com(direct_orbits, origin):
-
     if origin == 'COM':
         return ['COM']
     return [origin] + path_to_com(direct_orbits, direct_orbits[origin])
 
 
 def part_b_no_nx(data: List[Tuple[str, str]]) -> int:
-
     direct_orbits: Dict[str, str] = {orbit_to: orbit_from for orbit_from, orbit_to in data}
 
     you_path: List[str] = path_to_com(direct_orbits, 'YOU')
