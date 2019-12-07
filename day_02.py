@@ -14,7 +14,7 @@ def part_a(data: List[int]) -> int:
     data[1] = 12
     data[2] = 2
 
-    answer, _ = intcode(data)
+    answer, _, _, _, _ = intcode(data)
     return answer
 
 
@@ -30,7 +30,7 @@ def part_b(data: List[int]) -> int:
             test_data[1] = noun
             test_data[2] = verb
 
-            first_value, _ = intcode(test_data)
+            first_value, _, _, _, _ = intcode(test_data)
             if first_value == goal:
                 return 100 * noun + verb
     raise Exception('did not find a solution')

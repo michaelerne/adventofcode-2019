@@ -38,9 +38,9 @@ def write(data: List[int], instruction_pointer: int, parameter_number: int, valu
     data[param] = value
 
 
-# pylint: disable=R0912,R0914,R0915
+# pylint: disable=R0912,R0914,R0915,C0301
 # pylint does not like to many branches, local vars and statements. I don't care.
-def intcode(data: List[int], inputs=None, instruction_pointer: int = 0) -> Tuple[int, List[int]]:
+def intcode(data: List[int], inputs=None, instruction_pointer: int = 0) -> Tuple[int, List[int], List[int], int, bool]:
     """
     >>> intcode([1,0,0,0,99])
     (2, [])

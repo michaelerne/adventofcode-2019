@@ -11,12 +11,12 @@ SOLVE = partial(solve, DAY)
 
 
 def part_a(data: List[int]) -> int:
-    _, outputs = intcode(data, [1])
+    _, outputs, _, _, _ = intcode(data, [1])
     return outputs[-1]
 
 
 def part_b(data: List[int]) -> int:
-    _, outputs = intcode(data, [5])
+    _, outputs, _, _, _ = intcode(data, [5])
     return outputs[-1]
 
 

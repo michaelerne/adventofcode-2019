@@ -14,7 +14,7 @@ help:
 
 lint:
 	$(foreach file, $(wildcard $(DIR)/*.py), python -m mypy $(file);)
-	$(foreach file, $(wildcard $(DIR)/*.py), python -m pylint --disable=C0114,C0116 $(file);)
+	$(foreach file, $(wildcard $(DIR)/*.py), python -m pylint --disable=C0114,C0116 --max-line-length=120 $(file);)
 
 test:
 	python -m doctest util.py
