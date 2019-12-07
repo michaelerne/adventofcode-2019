@@ -121,7 +121,8 @@ def intcode(data: List[int], inputs=None, instruction_pointer: int = 0) -> Tuple
 
         elif opcode == 3:
             if len(inputs) == 0:
-                raise Exception("ran out of inputs")
+                return -1, outputs, data, instruction_pointer, False
+
 
             value_1 = inputs[0]
             inputs = inputs[1:]
@@ -182,7 +183,7 @@ def intcode(data: List[int], inputs=None, instruction_pointer: int = 0) -> Tuple
             instruction_pointer_shift = 4
 
         elif opcode == 99:
-            return data[0], outputs
+            return data[0], outputs, data, instruction_pointer, True
 
         else:
             raise Exception(f"unknown opcode [{opcode}]")
