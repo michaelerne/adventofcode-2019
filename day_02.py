@@ -24,7 +24,7 @@ def part_b(data: List[int]) -> int:
     for noun in range(0, 99):
         for verb in range(0, 99):
 
-            test_data = data.copy()
+            test_data = data[:]
 
             # modify
             test_data[1] = noun

@@ -11,18 +11,18 @@ SOLVE = partial(solve, DAY)
 
 
 def thruster_amp(program: List[int], phase_settings: List[int]) -> int:
-    _, outputs, _, _, _ = intcode(program.copy(), [phase_settings[0], 0])
-    _, outputs, _, _, _ = intcode(program.copy(), [phase_settings[1], outputs[0]])
-    _, outputs, _, _, _ = intcode(program.copy(), [phase_settings[2], outputs[0]])
-    _, outputs, _, _, _ = intcode(program.copy(), [phase_settings[3], outputs[0]])
-    _, outputs, _, _, _ = intcode(program.copy(), [phase_settings[4], outputs[0]])
+    _, outputs, _, _, _ = intcode(program[:], [phase_settings[0], 0])
+    _, outputs, _, _, _ = intcode(program[:], [phase_settings[1], outputs[0]])
+    _, outputs, _, _, _ = intcode(program[:], [phase_settings[2], outputs[0]])
+    _, outputs, _, _, _ = intcode(program[:], [phase_settings[3], outputs[0]])
+    _, outputs, _, _, _ = intcode(program[:], [phase_settings[4], outputs[0]])
 
     return outputs[0]
 
 
 def thruster_amp_feedback(program: List[int], phase_settings: List[int]) -> int:
     outputs: List[int] = []
-    programs: List[List[int]] = [program.copy() for _ in range(0, 5)]
+    programs: List[List[int]] = [program[:] for _ in range(0, 5)]
     instruction_pointers = [0 for _ in range(0, 5)]
     inputs = [[x] for x in phase_settings]
 
