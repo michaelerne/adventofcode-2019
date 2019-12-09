@@ -32,6 +32,7 @@ def get_pixel(data, x, y):
         return get_pixel(data[1:], x, y)
     return pixel
 
+
 def part_b(data: List[int]) -> str:
     # start with a black image
     image = Image.new('RGB', (WIDTH + 10, HEIGHT + 10), "black")
