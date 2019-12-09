@@ -2,57 +2,45 @@ from functools import partial
 from os.path import basename, splitext
 from typing import List
 from itertools import permutations
+from queue import SimpleQueue as Queue
 
 from lib import solve
-from util import intcode
+from intcode import Intcode
 
 DAY: int = int(splitext(basename(__file__))[0].split('_')[1])
 SOLVE = partial(solve, DAY)
 
 
 def thruster_amp(program: List[int], phase_settings: List[int]) -> int:
-    _, outputs, _, _, _ = intcode(program[:], [phase_settings[0], 0])
-    _, outputs, _, _, _ = intcode(program[:], [phase_settings[1], outputs[0]])
-    _, outputs, _, _, _ = intcode(program[:], [phase_settings[2], outputs[0]])
-    _, outputs, _, _, _ = intcode(program[:], [phase_settings[3], outputs[0]])
-    _, outputs, _, _, _ = intcode(program[:], [phase_settings[4], outputs[0]])
+    queues = [Queue() for _ in range(6)]
+    for x in range(5):
+        queues[x].put(phase_settings[x])
+    queues[0].put(0)
 
-    return outputs[0]
+    amps = [Intcode(memory=program[:], input_queue=queues[x], output_queue=queues[x + 1]) for x in range(5)]
+
+    for amp in amps:
+        amp.start()
+
+    amps[-1].join()
+    output = amps[-1].output_queue.get()
+    return output
 
 
 def thruster_amp_feedback(program: List[int], phase_settings: List[int]) -> int:
-    outputs: List[int] = []
-    programs: List[List[int]] = [program[:] for _ in range(0, 5)]
-    instruction_pointers = [0 for _ in range(0, 5)]
-    inputs = [[x] for x in phase_settings]
+    queues = [Queue() for _ in range(5)]
+    for x in range(5):
+        queues[x].put(phase_settings[x])
+    queues[0].put(0)
 
-    inputs[0].append(0)
-    halt_detected = False
-    current_program = 0
+    amps = [Intcode(memory=program[:], input_queue=queues[x], output_queue=queues[(x + 1) % 5]) for x in range(5)]
 
-    while not halt_detected:
+    for amp in amps:
+        amp.start()
 
-        next_program = (current_program + 1) % 5
-
-        _, outputs, programs[current_program], instruction_pointers[current_program], is_halt = intcode(
-            programs[current_program],
-            inputs[current_program],
-            instruction_pointers[current_program]
-        )
-
-        # remove the consumed inputs
-        inputs[current_program] = []
-
-        # propagate the output to the next amp
-        inputs[next_program].append(outputs[0])
-
-        # if the last amp quit with opcode 99
-        if current_program == 4 and is_halt:
-            halt_detected = True
-
-        current_program = next_program
-
-    return outputs[0]
+    amps[-1].join()
+    output = amps[-1].output_queue.get()
+    return output
 
 
 def part_a(data: List[int]) -> int:
