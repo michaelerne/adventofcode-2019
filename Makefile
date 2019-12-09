@@ -13,8 +13,8 @@ help:
 
 
 lint:
-	$(foreach file, $(wildcard $(DIR)/*.py), python -m mypy $(file);)
-	$(foreach file, $(wildcard $(DIR)/*.py), python -m pylint --disable=C0114,C0116 --max-line-length=120 $(file);)
+	python -m mypy *.py
+	python -m pylint --disable=C0114,C0115,C0116,R0801 --max-line-length=120 *.py
 
 test:
 	python -m doctest util.py
