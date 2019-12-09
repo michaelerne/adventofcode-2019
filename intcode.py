@@ -1,8 +1,23 @@
 from threading import Thread
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 from queue import SimpleQueue as Queue
+from collections import defaultdict
 
-Memory = List[int]
+
+class Memory():
+    def __getitem__(self, item):
+        return self.memory[item]
+
+    def __setitem__(self, key, value):
+        self.memory[key] = value
+
+    def __len__(self):
+        return len(self.memory.keys())
+
+    def __init__(self, memory):
+        self.memory = defaultdict(int)
+        for i in range(len(memory)):
+            self.memory[i] = memory[i]
 
 
 class IntCode(Thread):
@@ -21,16 +36,17 @@ class IntCode(Thread):
         return mode_1, mode_2, mode_3
 
     def __init__(self,
-                 memory: Memory,
-                 input_queue: Queue,
-                 output_queue: Queue):
+                 memory: List[int],
+                 input_queue: Queue = Queue(),
+                 output_queue: Queue = Queue()):
         Thread.__init__(self)
 
-        self.memory = memory
-        self.instruction_pointer = 0
-        self.input_queue = input_queue
-        self.output_queue = output_queue
-        self.halted = False
+        self.memory: Memory = Memory(memory)
+        self.instruction_pointer: int = 0
+        self.relative_base: int = 0
+        self.input_queue: Queue = input_queue
+        self.output_queue: Queue = output_queue
+        self.halted: bool = False
 
     def read(self, parameter_number: int) -> int:
         parameter_pointer = self.instruction_pointer + parameter_number
@@ -44,14 +60,21 @@ class IntCode(Thread):
         if mode == 1:
             return param
 
+        if mode == 2:
+            return self.memory[self.relative_base + param]
+
         raise Exception(f"unknown mode: [{mode}]")
 
     def write(self, parameter_number: int, value: int) -> None:
 
         parameter_pointer = self.instruction_pointer + parameter_number
         param = self.memory[parameter_pointer]
+        mode = self.modes[parameter_number - 1]
 
-        self.memory[param] = value
+        if mode == 0 or mode == 1:
+            self.memory[param] = value
+        if mode == 2:
+            self.memory[self.relative_base + param] = value
 
     # pylint: disable=R0912,R0914,R0915,C0301
     def run(self) -> None:
@@ -132,6 +155,12 @@ class IntCode(Thread):
                 self.write(3, target_value)
 
                 instruction_pointer_shift = 4
+
+            elif opcode == 9:
+                value_1 = self.read(1)
+                self.relative_base += value_1
+
+                instruction_pointer_shift = 2
 
             elif opcode == 99:
                 self.halted = True
