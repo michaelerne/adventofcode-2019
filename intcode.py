@@ -5,7 +5,7 @@ from queue import SimpleQueue as Queue
 Memory = List[int]
 
 
-class Intcode(Thread):
+class IntCode(Thread):
 
     @property
     def opcode(self) -> int:
@@ -53,6 +53,7 @@ class Intcode(Thread):
 
         self.memory[param] = value
 
+    # pylint: disable=R0912,R0914,R0915,C0301
     def run(self) -> None:
 
         while True:

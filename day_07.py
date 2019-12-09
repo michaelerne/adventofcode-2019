@@ -5,19 +5,19 @@ from itertools import permutations
 from queue import SimpleQueue as Queue
 
 from lib import solve
-from intcode import Intcode
+from intcode import IntCode
 
 DAY: int = int(splitext(basename(__file__))[0].split('_')[1])
 SOLVE = partial(solve, DAY)
 
 
 def thruster_amp(program: List[int], phase_settings: List[int]) -> int:
-    queues = [Queue() for _ in range(6)]
-    for x in range(5):
-        queues[x].put(phase_settings[x])
+    queues: List[Queue] = [Queue() for _ in range(6)]
+    for idx in range(5):
+        queues[idx].put(phase_settings[idx])
     queues[0].put(0)
 
-    amps = [Intcode(memory=program[:], input_queue=queues[x], output_queue=queues[x + 1]) for x in range(5)]
+    amps = [IntCode(memory=program[:], input_queue=queues[x], output_queue=queues[x + 1]) for x in range(5)]
 
     for amp in amps:
         amp.start()
@@ -28,12 +28,12 @@ def thruster_amp(program: List[int], phase_settings: List[int]) -> int:
 
 
 def thruster_amp_feedback(program: List[int], phase_settings: List[int]) -> int:
-    queues = [Queue() for _ in range(5)]
-    for x in range(5):
-        queues[x].put(phase_settings[x])
+    queues: List[Queue] = [Queue() for _ in range(5)]
+    for idx in range(5):
+        queues[idx].put(phase_settings[idx])
     queues[0].put(0)
 
-    amps = [Intcode(memory=program[:], input_queue=queues[x], output_queue=queues[(x + 1) % 5]) for x in range(5)]
+    amps = [IntCode(memory=program[:], input_queue=queues[x], output_queue=queues[(x + 1) % 5]) for x in range(5)]
 
     for amp in amps:
         amp.start()
